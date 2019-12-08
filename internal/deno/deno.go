@@ -67,7 +67,13 @@ func New(version *string) (*Deno, error) {
 		return nil, err
 	}
 
-	DenoDir := path.Join(homeDir, ".denox", "deno_"+*version)
+	DenoDir := ""
+
+	if s := os.Getenv("DENO_DIR"); s != "" {
+		DenoDir = s
+	} else {
+		DenoDir = path.Join(homeDir, ".denox", "deno_"+*version)
+	}
 
 	if err := fs.EnsureDir(path.Join(DenoDir, "bin")); err != nil {
 		return nil, err

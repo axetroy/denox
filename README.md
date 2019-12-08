@@ -33,7 +33,7 @@ export PATH="$PATH:~/bin"
 finally, try it out.
 
 ```bash
-denox https://deno.land/x/std/examples/welcome.ts
+$ denox https://deno.land/x/std/examples/welcome.ts
 ```
 
 ### Build from source code
@@ -47,7 +47,7 @@ $ make build
 ### Test
 
 ```bash
-make test
+$ make test
 ```
 
 ### License
