@@ -1,17 +1,14 @@
 package utils
 
 import (
+	"archive/zip"
 	"compress/gzip"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 	"path"
-	"runtime"
-	"strings"
 
-	"github.com/axetroy/denox/internal/fs"
 	"github.com/cheggaaa/pb/v3"
 	"github.com/pkg/errors"
 )
@@ -65,19 +62,45 @@ func DownloadFile(filepath string, url string) (*pb.ProgressBar, error) {
 	return bar, err
 }
 
-func WinDecompress(tarFile, dest string) (*string, error) {
-	cmd := exec.Command("Expand-Archive", []string{tarFile, "-Destination", "dest"}...)
+func DecompressZip(tarFile, dest string) (*string, error) {
+	r, err := zip.OpenReader(tarFile)
 
-	if err := cmd.Run(); err != nil {
-		return nil, errors.Wrap(err, "run command `Expand-Archive` fail")
+	if err != nil {
+		return nil, errors.Wrapf(err, "read zip file `%s` fail", tarFile)
 	}
 
-	newFilepath := path.Join(dest, path.Base(strings.TrimSuffix(tarFile, ".zip"))) + ".exe"
+	defer r.Close()
+
+	if len(r.File) > 1 {
+		return nil, errors.New("window .zip file should only contain single file")
+	}
+
+	f := r.File[0]
+
+	newFilepath := path.Join(dest, f.Name)
+
+	src, err := f.Open()
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer src.Close()
+
+	dst, err := os.Create(newFilepath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := io.Copy(dst, src); err != nil {
+		return nil, err
+	}
 
 	return &newFilepath, nil
 }
 
-func UnixDecompress(tarFile, dest string) (*string, error) {
+func DecompressGz(tarFile, dest string) (*string, error) {
 	fileReader, err := os.Open(tarFile)
 
 	if err != nil {
@@ -94,16 +117,7 @@ func UnixDecompress(tarFile, dest string) (*string, error) {
 
 	defer gzipReader.Close()
 
-	newFilepath := path.Join(dest, path.Base(strings.TrimSuffix(tarFile, ".gz")))
-
-	// if file have exist. then remove it first
-	if ok, err := fs.PathExists(newFilepath); err != nil {
-		return nil, err
-	} else if ok {
-		if err = os.Remove(newFilepath); err != nil {
-			return nil, errors.Wrapf(err, "remove file `%s` fail", newFilepath)
-		}
-	}
+	newFilepath := path.Join(dest, "deno")
 
 	fileWriter, err := os.Create(newFilepath)
 
@@ -132,9 +146,9 @@ func UnixDecompress(tarFile, dest string) (*string, error) {
 
 // Decompress gzip file and return filepath
 func Decompress(tarFile, dest string) (*string, error) {
-	if runtime.GOOS == "windows" {
-		return WinDecompress(tarFile, dest)
+	if path.Ext(tarFile) == ".zip" {
+		return DecompressZip(tarFile, dest)
 	} else {
-		return UnixDecompress(tarFile, dest)
+		return DecompressGz(tarFile, dest)
 	}
 }

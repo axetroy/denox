@@ -132,14 +132,9 @@ func (d *Deno) Download() (executablePath string, err error) {
 
 		}
 
-		if filepath, err := utils.Decompress(localGzFilepath, dstDir); err != nil {
+		if _, err := utils.Decompress(localGzFilepath, dstDir); err != nil {
 			return "", errors.Wrapf(err, "decompress gzip file fail")
 		} else {
-			// rename deno_v0.25.0_osx_x64 -> deno
-			if err := os.Rename(*filepath, executablePath); err != nil {
-				return "", errors.Wrap(err, "rename fail")
-			}
-
 			// make sure is it is a executable file
 			if d.Os != OsWindows {
 				mod := os.FileMode(0755)
