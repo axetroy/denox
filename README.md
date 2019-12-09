@@ -16,7 +16,7 @@
 - [x] Cross platform support
 - [x] Install Deno automatically
 - [x] Support any version of Deno with environment variable `DENO_VERSION`
-- [x] Consistent with Deno
+- [x] Fully compatible with Deno
 
 ### Usage
 
