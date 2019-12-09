@@ -39,26 +39,26 @@ type Deno struct {
 
 func New(version *string) (*Deno, error) {
 	if version == nil {
-		if v, err := getLatestVersion(); err != nil {
+		if v, err := getLatestDenoVersion(); err != nil {
 			return nil, err
 		} else {
 			version = v
 		}
 	}
 
-	denoOs, err := getOs()
+	denoOs, err := getDenoOS()
 
 	if err != nil {
 		return nil, err
 	}
 
-	denoArch, err := getArch()
+	denoArch, err := getDenoArch()
 
 	if err != nil {
 		return nil, err
 	}
 
-	cacheDir, err := getCacheDir()
+	cacheDir, err := getDenoCacheDir()
 
 	if err != nil {
 		return nil, err
@@ -149,7 +149,7 @@ func (d *Deno) Download() (executablePath string, err error) {
 }
 
 // get deno OS
-func getOs() (*Os, error) {
+func getDenoOS() (*Os, error) {
 	var denoOS Os
 
 	switch runtime.GOOS {
@@ -170,7 +170,7 @@ func getOs() (*Os, error) {
 }
 
 // get deno Arch
-func getArch() (*Arch, error) {
+func getDenoArch() (*Arch, error) {
 	var denoArch Arch
 
 	switch runtime.GOARCH {
@@ -185,7 +185,7 @@ func getArch() (*Arch, error) {
 }
 
 // get latest version of Deno from remote
-func getLatestVersion() (*string, error) {
+func getLatestDenoVersion() (*string, error) {
 	r, err := http.Get("https://denolib.github.io/setup-deno/release.json")
 
 	if err != nil {
@@ -222,7 +222,7 @@ func getLatestVersion() (*string, error) {
 }
 
 // get cache dir for deno
-func getCacheDir() (string, error) {
+func getDenoCacheDir() (string, error) {
 	if userCacheDir, err := os.UserCacheDir(); err != nil {
 		return "", errors.Wrap(err, "get user cache dir fail")
 	} else {

@@ -74,7 +74,7 @@ func main() {
 
 	go func() {
 		s := <-signalProxy
-		if cmd != nil {
+		if cmd != nil && !cmd.ProcessState.Exited() {
 			if err = cmd.Process.Signal(s); err != nil {
 				err = errors.Wrapf(err, "send signal `%s` fail", s)
 			}
