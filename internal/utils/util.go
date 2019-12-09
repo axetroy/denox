@@ -24,11 +24,11 @@ func DownloadFile(filepath string, url string) (*pb.ProgressBar, error) {
 		return nil, errors.Wrapf(err, "Download `%s` fail", url)
 	}
 
+	defer response.Body.Close()
+
 	if response.StatusCode >= http.StatusBadRequest {
 		return nil, errors.New(fmt.Sprintf("download file with status code %d", response.StatusCode))
 	}
-
-	defer response.Body.Close()
 
 	// Create the file
 	writer, err := os.Create(filepath)
