@@ -25,12 +25,30 @@ jobs:
           go version
           go env
 
-      - name: Test
+      - name: Unit Test
         run: make test
 
       - name: Build
         run: |
           bash build.sh
+
+      - name: Test (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          tar -xzvf ./bin/denox_linux_amd64.tar.gz
+          ./bin/denox https://deno.land/x/std/examples/welcome.ts
+
+      - name: Test (OSX)
+        if: startsWith(matrix.os, 'macOS')
+        run: |
+          tar -xzvf ./bin/denox_darwin_amd64.tar.gz
+          ./bin/denox https://deno.land/x/std/examples/welcome.ts
+
+      - name: Test (Windows)
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          tar -xzvf ./bin/denox_windows_amd64.tar.gz
+          ./bin/denox.exe https://deno.land/x/std/examples/welcome.ts
 
       # after success
       - name: Coverage
