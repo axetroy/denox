@@ -1,7 +1,10 @@
 package deno
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"runtime"
@@ -186,9 +189,39 @@ func getArch() (*Arch, error) {
 
 // get latest version of Deno from remote
 func getLatestVersion() (*string, error) {
-	v := "v0.26.0"
+	r, err := http.Get("https://denolib.github.io/setup-deno/release.json")
 
-	return &v, nil
+	if err != nil {
+		return nil, err
+	}
+
+	if r.StatusCode >= http.StatusBadRequest {
+		return nil, errors.New(r.Status)
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "read body fail")
+	}
+
+	type Response struct {
+		Name string `json:"name"`
+	}
+
+	var res []Response
+
+	if err := json.Unmarshal(b, &res); err != nil {
+		return nil, errors.Wrap(err, "parse JSON fail")
+	}
+
+	if res == nil || len(res) == 0 {
+		return nil, errors.New("can not found version")
+	}
+
+	latestVersion := res[0].Name
+
+	return &latestVersion, nil
 }
 
 // get cache dir for deno
