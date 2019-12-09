@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"runtime"
 	"strings"
@@ -64,8 +65,19 @@ func DownloadFile(filepath string, url string) (*pb.ProgressBar, error) {
 	return bar, err
 }
 
-// Decompress gzip file and return filepath
-func Decompress(tarFile, dest string) (*string, error) {
+func WinDecompress(tarFile, dest string) (*string, error) {
+	cmd := exec.Command("Expand-Archive", []string{tarFile, "-Destination", "dest"}...)
+
+	if err := cmd.Run(); err != nil {
+		return nil, errors.Wrap(err, "run command `Expand-Archive` fail")
+	}
+
+	newFilepath := path.Join(dest, path.Base(strings.TrimSuffix(tarFile, ".zip"))) + ".exe"
+
+	return &newFilepath, nil
+}
+
+func UnixDecompress(tarFile, dest string) (*string, error) {
 	fileReader, err := os.Open(tarFile)
 
 	if err != nil {
@@ -111,16 +123,18 @@ func Decompress(tarFile, dest string) (*string, error) {
 		return nil, err
 	}
 
-	mod := os.FileMode(0755)
-
-	if runtime.GOOS == "windows" {
-		// read and write
-		mod = os.FileMode(0400)
-	}
-
-	if err := fileWriter.Chmod(mod); err != nil {
+	if err := fileWriter.Chmod(os.FileMode(0755)); err != nil {
 		return nil, errors.Wrap(err, "change file mod fail")
 	}
 
 	return &newFilepath, nil
+}
+
+// Decompress gzip file and return filepath
+func Decompress(tarFile, dest string) (*string, error) {
+	if runtime.GOOS == "windows" {
+		return WinDecompress(tarFile, dest)
+	} else {
+		return UnixDecompress(tarFile, dest)
+	}
 }
