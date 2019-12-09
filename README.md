@@ -1,3 +1,10 @@
+[![Build Status](https://github.com/axetroy/denox/workflows/ci/badge.svg)](https://github.com/axetroy/denox/actions)
+[![Coverage Status](https://coveralls.io/repos/github/axetroy/denox/badge.svg?branch=master)](https://coveralls.io/github/axetroy/denox?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/axetroy/denox)](https://goreportcard.com/report/github.com/axetroy/denox)
+![Latest Version](https://img.shields.io/github/v/release/axetroy/denox.svg)
+![License](https://img.shields.io/github/license/axetroy/denox.svg)
+![Repo Size](https://img.shields.io/github/repo-size/axetroy/denox.svg)
+
 ### Execute Deno script even if you don't have Deno installed
 
 > Why? It looks the same as Deno's command line, so why do I need such a tool?
