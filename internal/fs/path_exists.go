@@ -1,10 +1,17 @@
 package fs
 
-import "os"
+import (
+	"github.com/pkg/errors"
+	"os"
+)
 
-func PathExists(path string) (isExist bool) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
+func PathExists(path string) (bool, error) {
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, errors.Wrapf(err, "stat file `%s` fail", path)
 	}
-	return true
+
+	return true, nil
 }

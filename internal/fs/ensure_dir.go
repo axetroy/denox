@@ -1,9 +1,10 @@
 package fs
 
 import (
-	"github.com/pkg/errors"
 	"os"
 	"path"
+
+	"github.com/pkg/errors"
 )
 
 func EnsureDir(dir string) error {
@@ -14,7 +15,7 @@ func EnsureDir(dir string) error {
 		}
 	}
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		if err := os.Mkdir(dir, os.ModePerm);err!=nil{
+		if err := os.Mkdir(dir, os.ModePerm); err != nil {
 			return errors.Wrapf(err, "ensure dir `%s` fail", dir)
 		}
 	}

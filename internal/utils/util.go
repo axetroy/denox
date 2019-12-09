@@ -85,7 +85,9 @@ func Decompress(tarFile, dest string) (*string, error) {
 	newFilepath := path.Join(dest, path.Base(strings.TrimSuffix(tarFile, ".gz")))
 
 	// if file have exist. then remove it first
-	if fs.PathExists(newFilepath) {
+	if ok, err := fs.PathExists(newFilepath); err != nil {
+		return nil, err
+	} else if ok {
 		if err = os.Remove(newFilepath); err != nil {
 			return nil, errors.Wrapf(err, "remove file `%s` fail", newFilepath)
 		}

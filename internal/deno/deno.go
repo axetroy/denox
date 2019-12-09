@@ -122,7 +122,9 @@ func (d *Deno) Download() (executablePath string, err error) {
 
 	// if Deno executable file not exist
 	// then we should download it
-	if !fs.PathExists(executablePath) {
+	if exit, err := fs.PathExists(executablePath); err != nil {
+		return "", errors.Wrapf(err, "stat file `%s` fail", executablePath)
+	} else if !exit {
 		// download the file for current platform
 		if _, err = utils.DownloadFile(localGzFilepath, downloadURL); err != nil {
 			return "", errors.Wrap(err, "download file fail")

@@ -49,8 +49,10 @@ $ denox https://deno.land/x/std/examples/welcome.ts
 
 ### Build from source code
 
+Make sure you have Golang@v1.13.1 installed.
+
 ```bash
-$ git clone github.com/axetroy/denox $GOPATH/src/github.com/axetroy/denox
+$ git clone https://github.com/axetroy/denox.git $GOPATH/src/github.com/axetroy/denox
 $ cd $GOPATH/src/github.com/axetroy/denox
 $ make build
 ```
