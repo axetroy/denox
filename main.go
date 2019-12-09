@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"syscall"
 
 	"github.com/axetroy/denox/internal/deno"
 	"github.com/axetroy/denox/internal/signals"
@@ -45,18 +46,36 @@ func main() {
 		err = d.Clean()
 	}()
 
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Kill, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
+	go func() {
+		<-quit
+		// if receive exit signal
+		err = d.Clean()
+
+		if err != nil {
+			log.Printf("%+v\n", err)
+		}
+
+		os.Exit(1)
+	}()
+
 	executablePath, err := d.Download()
+
+	// if download success. we don't need to listen quit signal
+	signal.Stop(quit)
 
 	if err != nil {
 		err = errors.Wrap(err, "get executable path fail")
 		return
 	}
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, signals.AllSignals...)
+	signalProxy := make(chan os.Signal)
+	signal.Notify(signalProxy, signals.AllSignals...)
 
 	go func() {
-		s := <-quit
+		s := <-signalProxy
 		if cmd != nil {
 			if err = cmd.Process.Signal(s); err != nil {
 				err = errors.Wrapf(err, "send signal `%s` fail", s)

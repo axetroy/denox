@@ -121,8 +121,10 @@ func (d *Deno) Download() (executablePath string, err error) {
 	// then we should download it
 	if !fs.PathExists(executablePath) {
 		// download the file for current platform
-		if err := utils.DownloadFile(localGzFilepath, downloadURL); err != nil {
+		if _, err = utils.DownloadFile(localGzFilepath, downloadURL); err != nil {
 			return "", errors.Wrap(err, "download file fail")
+		} else {
+
 		}
 
 		if filepath, err := utils.Decompress(localGzFilepath, dstDir); err != nil {

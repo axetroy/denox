@@ -1,5 +1,9 @@
 ### Execute Deno script even if you don't have Deno installed
 
+> Why? It looks the same as Deno's command line, so why do I need such a tool?
+> There are scenarios where I need to run the same script with different versions of Deno
+> In such scenarios, Deno's version manager may not be the best option
+
 ### Features
 
 - [x] Cross platform support
@@ -9,7 +13,7 @@
 
 ### Usage
 
-```shell
+```bash
 # run script with latest version of Deno
 $ denox https://deno.land/std/examples/welcome.ts
 # run script with specific version of Deno

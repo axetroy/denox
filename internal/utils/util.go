@@ -16,18 +16,18 @@ import (
 )
 
 // Download file from URL to the filepath
-func DownloadFile(filepath string, url string) error {
+func DownloadFile(filepath string, url string) (*pb.ProgressBar, error) {
 	tmpl := fmt.Sprintf(`{{string . "prefix"}}{{ green "%s" }} {{counters . }} {{ bar . "[" "=" ">" "-" "]"}} {{percent . }} {{speed . }}{{string . "suffix"}}`, filepath)
 
 	// Get the data
 	response, err := http.Get(url)
 
 	if err != nil {
-		return errors.Wrapf(err, "Download `%s` fail", url)
+		return nil, errors.Wrapf(err, "Download `%s` fail", url)
 	}
 
 	if response.StatusCode >= http.StatusBadRequest {
-		return errors.New(fmt.Sprintf("download file with status code %d", response.StatusCode))
+		return nil, errors.New(fmt.Sprintf("download file with status code %d", response.StatusCode))
 	}
 
 	defer response.Body.Close()
@@ -36,7 +36,7 @@ func DownloadFile(filepath string, url string) error {
 	writer, err := os.Create(filepath)
 
 	if err != nil {
-		return errors.Wrapf(err, "Create `%s` fail", filepath)
+		return nil, errors.Wrapf(err, "Create `%s` fail", filepath)
 	}
 
 	defer func() {
@@ -61,7 +61,7 @@ func DownloadFile(filepath string, url string) error {
 		err = errors.Wrap(err, "copy fail")
 	}
 
-	return err
+	return bar, err
 }
 
 // Decompress gzip file and return filepath
