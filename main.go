@@ -42,9 +42,7 @@ func main() {
 		return
 	}
 
-	defer func() {
-		err = d.Clean()
-	}()
+	defer d.Clean()
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Kill, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
