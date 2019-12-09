@@ -134,8 +134,11 @@ func (d *Deno) Download() (executablePath string, err error) {
 			}
 
 			// make sure is it is a executable file
-			if err := os.Chmod(executablePath, 0o755); err != nil {
-				err = errors.Wrap(err, "set permission fail")
+			if d.Os != OsWindows {
+				mod := os.FileMode(0755)
+				if err := os.Chmod(executablePath, mod); err != nil {
+					err = errors.Wrap(err, "set permission fail")
+				}
 			}
 		}
 	}

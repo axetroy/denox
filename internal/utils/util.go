@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"runtime"
 	"strings"
 
 	"github.com/axetroy/denox/internal/fs"
@@ -108,7 +109,14 @@ func Decompress(tarFile, dest string) (*string, error) {
 		return nil, err
 	}
 
-	if err := fileWriter.Chmod(os.FileMode(0x755)); err != nil {
+	mod := os.FileMode(0755)
+
+	if runtime.GOOS == "windows" {
+		// read and write
+		mod = os.FileMode(0400)
+	}
+
+	if err := fileWriter.Chmod(mod); err != nil {
 		return nil, errors.Wrap(err, "change file mod fail")
 	}
 

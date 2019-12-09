@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
-	"syscall"
 
 	"github.com/axetroy/denox/internal/deno"
+	"github.com/axetroy/denox/internal/signals"
 	"github.com/pkg/errors"
 )
 
@@ -53,10 +53,7 @@ func main() {
 	}
 
 	quit := make(chan os.Signal)
-	// kill (no param) default send syscall.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
-	signal.Notify(quit, os.Kill, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(quit, signals.AllSignals...)
 
 	go func() {
 		s := <-quit
