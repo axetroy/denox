@@ -61,6 +61,14 @@ $ make build
 $ make test
 ```
 
+### Uninstall
+
+remove `$HOME/.denox` folder with following command:
+
+```bash
+$ rm -rf $HOME/.denox
+```
+
 ### License
 
 The [MIT License](LICENSE)
