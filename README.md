@@ -29,6 +29,15 @@ $ DENO_VERSION=v0.26.0 denox https://deno.land/std/examples/welcome.ts
 
 ### Installation
 
+If you are using `Linux/MacOS`. you can install it with following command:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/axetroy/denox/master/install.sh | bash
+# or install specified version
+wget -qO- https://raw.githubusercontent.com/axetroy/denox/master/install.sh | bash -s v0.1.1
+```
+
+Or you can
 
 Download the executable file for your platform at [release page](https://github.com/axetroy/denox/releases)
 
