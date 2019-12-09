@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -81,13 +80,16 @@ func main() {
 		}
 	}()
 
+	if err := os.Setenv("DENO_DIR", d.DenoDir); err != nil {
+		err = errors.Wrapf(err, "set env $DENO_DIR=%s fail", d.DenoDir)
+		return
+	}
+
 	cmd = exec.Command(executablePath, denoArgs...)
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-
-	cmd.Env = append(cmd.Env, fmt.Sprintf("DENO_DIR=%s", d.DenoDir))
 
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
