@@ -3,6 +3,8 @@ set -e
 
 downloadFolder="${HOME}/Downloads"
 
+mkdir -p downloadFolder
+
 get_arch() {
     a=$(uname -m)
     case ${a} in
