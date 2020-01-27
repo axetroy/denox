@@ -1,6 +1,6 @@
 # github.com/VividCortex/ewma v1.1.1
 github.com/VividCortex/ewma
-# github.com/cheggaaa/pb/v3 v3.0.3
+# github.com/cheggaaa/pb/v3 v3.0.4
 github.com/cheggaaa/pb/v3
 github.com/cheggaaa/pb/v3/termutil
 # github.com/fatih/color v1.7.0
@@ -9,7 +9,7 @@ github.com/fatih/color
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.10
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.6
+# github.com/mattn/go-runewidth v0.0.7
 github.com/mattn/go-runewidth
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
